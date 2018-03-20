@@ -4,7 +4,7 @@ const Joi = require("joi");
 const UUID = require("uuid");
 const OS = require("os");
 
-var server = new Hapi.Server({ host: OS.hostname(), port: "3000" });
+var server = new Hapi.Server({ host: OS.hostname(), port: "3000", routes: { "cors": true } });
 var cluster, bucket;
 
 var connect = (callback) => {
