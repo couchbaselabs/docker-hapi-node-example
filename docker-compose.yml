@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+    database:
+        image: bentonam/couchbase-docker:enterprise-5.1.0
+        ports:
+            - "8091-8094:8091-8094"
+            - "11207-11210:11207-11210"
+        environment:
+            CLUSTER_USERNAME: Administrator
+            CLUSTER_PASSWORD: password
+            BUCKET: example
+            RBAC_USERNAME: example
+            RBAC_PASSWORD: 123456
+            RBAC_ROLES: bucket_full_access[example]
+    api:
+        build: ./node
+        ports:
+            - "3000:3000"
+        environment:
+            COUCHBASE_HOST: database
+            COUCHBASE_BUCKET: example
+            COUCHBASE_APPLICATION_USER: example
+            COUCHBASE_APPLICATION_PASSWORD: 123456
+        restart: always

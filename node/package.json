@@ -1,0 +1,22 @@
+{
+  "name": "sacjs-meetup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "COUCHBASE_HOST=localhost COUCHBASE_BUCKET=example COUCHBASE_APPLICATION_USER=example COUCHBASE_APPLICATION_PASSWORD=123456 ./node_modules/nodemon/bin/nodemon.js app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "couchbase": "^2.4.5",
+    "hapi": "^17.2.3",
+    "joi": "^13.1.2",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
+  }
+}
