@@ -15,6 +15,7 @@ var connect = (callback) => {
     cluster.authenticate(process.env.COUCHBASE_APPLICATION_USER, process.env.COUCHBASE_APPLICATION_PASSWORD);
     bucket = cluster.openBucket(process.env.COUCHBASE_BUCKET, error => {
         if(error) {
+            console.log(error);
             bucket = null;
             setTimeout(() => {
                 connect(callback);
@@ -270,6 +271,10 @@ server.route({
 });
 
 server.start().then(result => {
+    console.log("CONTAINER HOSTNAME: " + OS.hostname());
+    console.log("HOST: " + process.env.COUCHBASE_HOST);
+    console.log("APPLICATION USER: " + process.env.COUCHBASE_APPLICATION_USER);
+    console.log("BUCKET: " + process.env.COUCHBASE_BUCKET);
     connect(() => {
         var statement = "CREATE PRIMARY INDEX ON " + bucket._name;
         var query = Couchbase.N1qlQuery.fromString(statement);
