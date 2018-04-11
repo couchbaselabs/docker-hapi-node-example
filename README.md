@@ -170,6 +170,29 @@ response: {
 }
 ```
 
+**GET /receipts**
+
+```
+response: [
+    {
+        "id": string,
+        "type": "string",
+        "customer": object{
+            "id": string,
+            "firstname": string,
+            "lastname": string
+        },
+        "products": array[
+            object{
+                "id": string,
+                "name": string,
+                "price": number
+            }
+        ]
+    }
+]
+```
+
 ## Resources
 
 If you'd like to reach out to me (Nic Raboy) directly, you can find me on Twitter at [@nraboy](https://www.twitter.com/nraboy), or you can check out the following resources for this project.
