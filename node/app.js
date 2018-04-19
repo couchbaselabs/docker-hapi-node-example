@@ -1,6 +1,7 @@
 const Couchbase = require("couchbase");
 const Hapi = require("hapi");
 const Joi = require("joi");
+const Boom = require("boom");
 const UUID = require("uuid");
 const OS = require("os");
 
@@ -51,7 +52,7 @@ server.route({
         return await new Promise((resolve, reject) => {
             bucket.insert(id, request.payload, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 request.payload.id = id;
                 resolve(h.response(request.payload));
@@ -79,7 +80,7 @@ server.route({
         return await new Promise((resolve, reject) => {
             bucket.mutateIn(request.params.id).arrayAppend("creditcards", request.payload, true).execute((error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 resolve(h.response(request.payload));
             });
@@ -101,7 +102,7 @@ server.route({
         return await new Promise((resolve, reject) => {
             bucket.get(request.params.id, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 result.value.id = request.params.id;
                 resolve(h.response(result.value));
@@ -123,10 +124,11 @@ server.route({
     handler: async (request, h) => {
         return await new Promise((resolve, reject) => {
             bucket.lookupIn(request.params.id).get("creditcards").execute((error, result) => {
-                if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                try {
+                    resolve(h.response(result.content("creditcards")));
+                } catch (error) {
+                    resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
-                resolve(h.response(result.content("creditcards")));
             });
         });
     }
@@ -141,7 +143,7 @@ server.route({
             var query = Couchbase.N1qlQuery.fromString(statement);
             bucket.query(query, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 resolve(h.response(result));
             });
@@ -166,7 +168,7 @@ server.route({
         return await new Promise((resolve, reject) => {
             bucket.insert(id, request.payload, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 request.payload.id = id;
                 resolve(h.response(request.payload));
@@ -189,7 +191,7 @@ server.route({
         return await new Promise((resolve, reject) => {
             bucket.get(request.params.id, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 result.value.id = request.params.id;
                 resolve(h.response(result.value));
@@ -207,7 +209,7 @@ server.route({
             var query = Couchbase.N1qlQuery.fromString(statement);
             bucket.query(query, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 resolve(h.response(result));
             });
@@ -237,13 +239,13 @@ server.route({
             var query = Couchbase.N1qlQuery.fromString(statement);
             bucket.query(query, { customerid: request.payload.customerid, productids: request.payload.productids }, (error, snapshot) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 var id = UUID.v4();
                 snapshot[0].type = request.payload.type;
                 bucket.insert(id, snapshot[0], (error, result) => {
                     if(error) {
-                        reject(h.response({ code: error.code, message: error.message }).code(500));
+                        return resolve(h.response({ code: error.code, message: error.message }).code(500));
                     }
                     snapshot.id = id;
                     resolve(h.response(snapshot[0]));
@@ -262,7 +264,7 @@ server.route({
             var query = Couchbase.N1qlQuery.fromString(statement);
             bucket.query(query, (error, result) => {
                 if(error) {
-                    reject(h.response({ code: error.code, message: error.message }).code(500));
+                    return resolve(h.response({ code: error.code, message: error.message }).code(500));
                 }
                 resolve(h.response(result));
             });
