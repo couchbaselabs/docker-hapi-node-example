@@ -260,7 +260,7 @@ server.route({
     path: "/receipts",
     handler: async (request, h) => {
         return await new Promise((resolve, reject) => {
-            var statement = "SELECT META(receipt).id, receipt.* FROM " + bucket._name + " AS receipt WHERE receipt.type = 'receipts'";
+            var statement = "SELECT META(receipt).id, receipt.* FROM " + bucket._name + " AS receipt WHERE receipt.type = 'receipt'";
             var query = Couchbase.N1qlQuery.fromString(statement);
             bucket.query(query, (error, result) => {
                 if(error) {
